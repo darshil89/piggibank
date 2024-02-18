@@ -1,0 +1,27 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model PiggyBank {
+  id           String        @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt    DateTime      @default(now())
+  totalMoney   Float         
+  isBroken     Boolean       
+  transactions Transaction[]
+}
+
+model Transaction {
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  amount      Float
+  createdAt   DateTime  @default(now())
+  piggyBank   PiggyBank @relation(fields: [piggyBankId], references: [id])
+  piggyBankId String    @db.ObjectId
+}
